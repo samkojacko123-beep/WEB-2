@@ -63,12 +63,14 @@
             backdrop-filter: blur(6px);
         }
 
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 72px;
-        }
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 72px;
+    gap: 24px;
+}
+
 
         .logo {
             font-size: 18px;
@@ -187,9 +189,27 @@
     <li><a href="#test">Test stresu</a></li>
     <li><a href="#pomoc">Pomoc</a></li>
 </ul>
-
+    <button class="ai-btn" onclick="toggleAI()">AI Asistent</button>
     </div>
 </header>
+<div id="ai-assistant">
+    <div class="ai-header">
+        <strong>AI Asistent</strong>
+        <button onclick="toggleAI()">✕</button>
+    </div>
+
+    <div class="ai-messages" id="aiMessages">
+        <div class="ai-message ai-bot">
+            Ahoj 👋 Som AI asistent tejto stránky.
+            Môžem ti vysvetliť stres, duševné zdravie a imunitu.
+        </div>
+    </div>
+
+    <div class="ai-input">
+        <input type="text" id="aiInput" placeholder="Napíš otázku..." />
+        <button onclick="sendAI()">➤</button>
+    </div>
+</div>
 
 <section class="hero" id="uvod">
     <div class="container">
@@ -1432,6 +1452,82 @@
         font-size: 13px;
         color: #94a3b8;
     }
+/* ================= AI ASSISTANT ================= */
+
+.ai-btn {
+    margin-left: 24px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    background: var(--primary);
+    color: #020617;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#ai-assistant {
+    position: fixed;
+    top: 90px;
+    right: 24px;
+    width: 320px;
+    height: 420px;
+    background: #020617;
+    border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    display: none;
+    flex-direction: column;
+    z-index: 9999;
+}
+
+.ai-header {
+    background: #0f172a;
+    color: #fff;
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ai-messages {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.ai-message {
+    margin-bottom: 14px;
+    font-size: 14px;
+}
+
+.ai-bot {
+    color: #e5e7eb;
+}
+
+.ai-user {
+    text-align: right;
+    color: #60a5fa;
+}
+
+.ai-input {
+    display: flex;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.ai-input input {
+    flex: 1;
+    padding: 12px;
+    background: #020617;
+    border: none;
+    color: #fff;
+}
+
+.ai-input button {
+    width: 48px;
+    border: none;
+    background: var(--primary);
+    cursor: pointer;
+}
+
 </style>
 <footer>
     <div class="container">
@@ -1478,6 +1574,49 @@
 
     </div>
 </footer>
+<script>
+    function toggleAI() {
+        const ai = document.getElementById("ai-assistant");
+        ai.style.display = ai.style.display === "flex" ? "none" : "flex";
+    }
+
+    function sendAI() {
+        const input = document.getElementById("aiInput");
+        const text = input.value.trim();
+        if (!text) return;
+
+        const messages = document.getElementById("aiMessages");
+        messages.innerHTML += `<div class="ai-message ai-user">${text}</div>`;
+        input.value = "";
+
+        setTimeout(() => {
+            messages.innerHTML += `
+                <div class="ai-message ai-bot">
+                    ${generateResponse(text)}
+                </div>`;
+            messages.scrollTop = messages.scrollHeight;
+        }, 600);
+    }
+
+    function generateResponse(text) {
+        text = text.toLowerCase();
+
+        if (text.includes("stres"))
+            return "Stres je prirodzená reakcia organizmu. Dlhodobý stres však môže poškodzovať duševné zdravie aj imunitu.";
+
+        if (text.includes("imunit"))
+            return "Chronický stres znižuje imunitu zvýšením kortizolu a oslabením obranyschopnosti.";
+
+        if (text.includes("ako"))
+            return "Pomáha pravidelný spánok, pohyb, zdravá strava, psychohygiena a sociálna podpora.";
+
+        return "Môžem pomôcť s témami stresu, duševného zdravia a prevencie. Skús otázku spresniť.";
+    }
+
+    document.getElementById("aiInput").addEventListener("keypress", e => {
+        if (e.key === "Enter") sendAI();
+    });
+</script>
 
 </body>
 </html>
